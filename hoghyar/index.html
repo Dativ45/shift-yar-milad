@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102b36"><link rel="manifest" href="manifest.webmanifest"><title>حقوق‌یار</title>
+<style>
+:root{--bg:#f2f6f5;--card:#fff;--ink:#172b33;--muted:#63757b;--accent:#087e78;--line:#e1e9e7;--soft:#e9f5f3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.9 Tahoma,sans-serif}header{background:#102b36;color:white;padding:20px;border-radius:0 0 22px 22px}header h1{margin:0;font-size:24px}header p{margin:2px 0;color:#c6d9dc;font-size:12px}main{max-width:760px;margin:auto;padding:12px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}h2{font-size:16px;margin:0 0 10px}.grid,.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.field label{display:block;color:var(--muted);font-size:12px}.field input{width:100%;padding:10px;border:1px solid #d5e0dd;border-radius:10px;font:inherit}.stat{background:#f7faf9;border:1px solid var(--line);border-radius:11px;padding:9px}.stat span{display:block;color:var(--muted);font-size:11px}.stat strong{font-size:16px;overflow-wrap:anywhere}.total{background:#eaf6f3}.total strong{color:#076b61}.note{font-size:11px;color:var(--muted)}.formula{background:#f8faf9;border-radius:10px;padding:10px;font-size:12px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}button{border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:white;font:inherit;font-weight:bold}button.alt{background:var(--soft);color:#075e59}button.del{background:#fff0f0;color:#a33}.item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);gap:8px}@media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style></head><body>
+<header><h1>حقوق‌یار</h1><p>محاسبه و بایگانی کارکرد و دریافتی ماهانه</p></header><main>
+<section class="card"><h2>ماه کارکرد</h2><div class="grid">
+<div class="field"><label>ماه و سال (مثلاً آبان ۱۴۰۵)</label><input id="month" value="آبان ۱۴۰۵"></div>
+<div class="field"><label>تعداد روزهای ماه</label><input id="days" type="number" min="1" max="31" value="30"></div>
+<div class="field"><label>تعطیلات کاهنده موظفی</label><input id="holidays" type="number" min="0" value="4"></div></div><p class="note">تعطیلات این قسمت فقط برای موظفی است؛ تعطیل‌کاری واقعی جدا ثبت می‌شود.</p></section>
+<section class="card"><h2>ثبت شیفت‌ها</h2><div class="grid">
+<div class="field"><label>عصر E (هر نوبت ۶ ساعت)</label><input id="e" type="number" min="0" value="0"></div>
+<div class="field"><label>شب N (هر نوبت ۱۲ ساعت)</label><input id="n" type="number" min="0" value="0"></div>
+<div class="field"><label>صبح M (هر نوبت ۶ ساعت)</label><input id="m" type="number" min="0" value="0"></div>
+<div class="field"><label>هالیدی H (هر نوبت ۶ ساعت اضافه‌کاری)</label><input id="h" type="number" min="0" value="0"></div>
+<div class="field"><label>ساعات واقعی تعطیل‌کاری</label><input id="holidayHours" type="number" min="0" step=".5" value="0"></div>
+</div><p class="note">شیفت EN را در E و N جدا وارد کن. H به حضور واقعی اضافه نمی‌شود.</p></section>
+<section class="card"><h2>حقوق و کسورات ماه پرداخت</h2><div class="grid">
+<div class="field"><label>حقوق ثابت (تومان)</label><input id="fixed" type="number" min="0" value="0"></div>
+<div class="field"><label>کسورات واقعی (تومان)</label><input id="deductions" type="number" min="0" value="0"></div>
+<div class="field"><label>تعدیلات دیگر؛ مثبت یا منفی (تومان)</label><input id="other" type="number" value="0"></div>
+</div><p class="note">مالیات حدس زده نمی‌شود؛ کسورات را از فیش واقعی وارد کن.</p></section>
+<section class="card"><h2>نتیجه محاسبه</h2><div class="stats" id="stats"></div><div class="formula" id="detail" style="margin-top:10px"></div>
+<div class="actions"><button id="save">ذخیره این ماه</button><button class="alt" id="clear">پاک‌کردن ورودی‌ها</button><button class="alt" id="share">اشتراک گزارش</button></div></section>
+<section class="card"><h2>برآورد حقوق با تأخیر یک‌ماهه</h2><p class="note">مزایای کارکرد این ماه معمولاً ماه بعد پرداخت می‌شود. حقوق پرداخت = حقوق ثابت ماه پرداخت + مزایای ماه قبل + تعدیلات − کسورات.</p><div id="next" class="stats"></div></section>
+<section class="card"><h2>بایگانی ماه‌ها</h2><div id="history" class="note">هنوز ماهی ذخیره نشده است.</div></section>
+<section class="card"><h2>فرمول‌های مبنا</h2><div class="formula">موظفی = (روزهای ماه − تعطیلات کاهنده) × ۶٫۵۱ − ۸<br>حضور واقعی = E×۶ + N×۱۲ + M×۶<br>اضافه‌کاری = max(۰، حضور واقعی − موظفی) + H×۶<br>مبلغ اضافه‌کاری = ساعات اضافه‌کاری × ۲۱۹٬۰۰۰<br>حق شب = تعداد نوبت N × ۹۰۰٬۰۰۰<br>حق تعطیل‌کاری = (ساعات واقعی تعطیل‌کاری ÷ ۲) × ۱۵۰٬۰۰۰</div><p class="note">حق شب و تعطیل‌کاری مستقل‌اند و هرگز به حضور یا اضافه‌کاری اضافه نمی‌شوند.</p></section>
+</main>
+<script>
+const $=id=>document.getElementById(id), ids=['month','days','holidays','e','n','m','h','holidayHours','fixed','deductions','other'];
+const v=id=>Number($(id).value)||0, money=n=>Math.round(n).toLocaleString('fa-IR')+' تومان', dec=n=>Number(n.toFixed(2)).toLocaleString('fa-IR');
+function calculate(){const days=v('days'),hol=v('holidays'),e=v('e'),n=v('n'),m=v('m'),h=v('h'),hh=v('holidayHours');
+const required=Math.max(0,(days-hol)*6.51-8),presence=e*6+n*12+m*6,overtime=Math.max(0,presence-required)+h*6;
+const overtimePay=overtime*219000,nightPay=n*900000,holidayPay=hh/2*150000,variable=overtimePay+nightPay+holidayPay;
+const fixed=v('fixed'),deductions=v('deductions'),other=v('other'),net=fixed+variable+other-deductions;
+const rows=[['موظفی',dec(required)+' ساعت'],['حضور واقعی',dec(presence)+' ساعت'],['اضافه‌کاری',dec(overtime)+' ساعت'],['مبلغ اضافه‌کاری',money(overtimePay)],['حق شب',money(nightPay)],['حق تعطیل‌کاری',money(holidayPay)],['جمع مزایای متغیر',money(variable)],['خالص تخمینی',money(net)]];
+$('stats').innerHTML=rows.map((r,i)=>'<div class="stat '+(i===7?'total':'')+'"><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div>').join('');
+$('detail').innerHTML='حضور: '+e+'×۶ + '+n+'×۱۲ + '+m+'×۶ = '+dec(presence)+' ساعت<br>موظفی: ('+days+' − '+hol+')×۶٫۵۱ − ۸ = '+dec(required)+' ساعت<br>اضافه‌کاری: max(۰، '+dec(presence)+' − '+dec(required)+') + '+h+'×۶ = '+dec(overtime)+' ساعت<br>مزایای متغیر: '+money(overtimePay)+' + '+money(nightPay)+' + '+money(holidayPay)+' = <b>'+money(variable)+'</b>';
+return {month:$('month').value,days,holidays:hol,e,n,m,h,holidayHours:hh,required,presence,overtime,overtimePay,nightPay,holidayPay,variable,fixed,deductions,other,net};}
+function db(){return JSON.parse(localStorage.getItem('hoghyar')||'{}')}
+function render(){const d=calculate(),a=db(),prev=previousMonth(d.month),p=a[prev];
+$('next').innerHTML=p?[['ماه کارکرد قبلی',prev],['مزایای متغیر قبلی',money(p.variable)],['خالص برآوردی',money(d.fixed+p.variable+d.other-d.deductions)]] .map(x=>'<div class="stat"><span>'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join(''):'<div class="stat"><span>ماه قبل</span><strong>در بایگانی ثبت نشده</strong></div><div class="stat"><span>خالص بدون مزایای قبلی</span><strong>'+money(d.fixed+d.other-d.deductions)+'</strong></div>';
+const keys=Object.keys(a).sort((x,y)=>y.localeCompare(x,'fa'));$('history').innerHTML=keys.length?keys.map(k=>'<div class="item"><span><b>'+k+'</b><br>مزایا: '+money(a[k].variable)+'</span><span><button class="alt" data-load="'+k+'">بازکردن</button> <button class="del" data-del="'+k+'">حذف</button></span></div>').join(''):'هنوز ماهی ذخیره نشده است.';}
+function previousMonth(s){const names=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];let t=s.trim().replace(/[۰-۹]/g,c=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(c));let parts=t.split(/\s+/),i=names.indexOf(parts[0]),y=Number(parts[1]);if(i<0||!y)return '';if(i===0)return 'اسفند '+(y-1);return names[i-1]+' '+y;}
+function load(d){ids.forEach(k=>{if(d[k]!==undefined)$(k).value=d[k]});render();}
+ids.forEach(k=>$(k).addEventListener('input',render));
+$('save').onclick=()=>{const d=calculate();if(!d.month.trim()){alert('ماه و سال را وارد کن');return}const a=db();a[d.month]=d;localStorage.setItem('hoghyar',JSON.stringify(a));render();alert('ذخیره شد.');};
+$('clear').onclick=()=>{['e','n','m','h','holidayHours','fixed','deductions','other'].forEach(k=>$(k).value=0);render();};
+$('share').onclick=()=>{const d=calculate(),s='گزارش حقوق‌یار | '+d.month+'\nموظفی: '+dec(d.required)+' ساعت\nحضور: '+dec(d.presence)+' ساعت\nاضافه‌کاری: '+dec(d.overtime)+' ساعت\nمبلغ اضافه‌کاری: '+money(d.overtimePay)+'\nحق شب: '+money(d.nightPay)+'\nحق تعطیل‌کاری: '+money(d.holidayPay)+'\nجمع مزایا: '+money(d.variable);if(navigator.share)navigator.share({title:'گزارش حقوق‌یار',text:s});else navigator.clipboard?.writeText(s).then(()=>alert('گزارش کپی شد.'));};
+$('history').onclick=e=>{let k=e.target.dataset.load,del=e.target.dataset.del,a=db();if(k)load(a[k]);if(del&&confirm('این ماه حذف شود؟')){delete a[del];localStorage.setItem('hoghyar',JSON.stringify(a));render();}};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});render();
+</script></body></html>
