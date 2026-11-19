@@ -24,7 +24,9 @@ async function reply(env, chatId, text) {
 }
 function tehranDate(offsetDays=0) {
  const now = new Date(Date.now()+offsetDays*86400000);
- return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Tehran",year:"numeric",month:"2-digit",day:"2-digit"}).format(now);
+ const parts = new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Tehran",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(now);
+ const p = Object.fromEntries(parts.map(x=>[x.type,x.value]));
+ return p.year+"-"+p.month+"-"+p.day;
 }
 function formatDate(date) {
  const p=date.split("-").map(Number);
